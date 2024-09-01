@@ -2,4 +2,6 @@
 """when the node become unhealthy the master node checks and will wait for 5m and if it the node not become available the control plane consider it as nod got evicted.
   when you drain the node , the pods that are on the node will be evicted and will automatically create on another pods and also new pods will not be schedule on the pod.
   kubectl drain node_name
+when ever you drain the node the status will be for the node as "Ready, SchedulingDisable"
+
   
