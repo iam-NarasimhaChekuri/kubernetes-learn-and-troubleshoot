@@ -3,5 +3,50 @@
   when you drain the node , the pods that are on the node will be evicted and will automatically create on another pods and also new pods will not be schedule on the pod.
   kubectl drain node_name
 when ever you drain the node the status will be for the node as "Ready, SchedulingDisable"
+to make the node as schedulable you need to run the uncordon command 
+kubectl uncordon node_name
+cordon- it will make the node as unchedulable.
+when node is uncordoned only new pods will be scheduled.existing pods will never schedule.
+if there is only pod didn't have replicaset for pod then you can drain the node but the pod will be lost forever.
+to make node unschedule you can use cordon.
+-----------------------------------------------cluster upgrade process--------------------------------------------------------
+  upgrading the kubernetes cluster is depends on mainley two processes in that one is frist updating the master node and updating the worker nodes.
+first you can update the master node with new version and at that time all users can have access to the application and application should not go down. when you updating the master node ensure that the apiserver is having same version as updated version of master node
+in master node componets apart from the apiserver , rest of all components can have previous versions.
+Once master node updated then you can update the worker nodes
+updating worker nodes can have two processes in that one is  updating all worker nodes. With this type, you can have application down. so this type is not recommended.
+another one method is updating one node at a time by using drain and uncorned.
 
-  
+you can follow the url for reference: https://kubernetes.io/docs/tasks/administer-cluster/kubeadm/kubeadm-upgrade/
+
+version of cluster -- kubectl get nodes
+cat /etc/*release* --it will tell you the current operating system.
+
+logging into the node : ssh <ip.address>
+
+please follow the above doc for all kind of information you need from the upgrading the cluster.
+
+
+----------------------------------------------------------------------Backup and Restore----------------------------------------------------------------
+
+ETCD cluster - all data of cluster has stored. 
+Backup candidates- resource cofiguration, etcd cluster, persistant volumes
+resource configuration:
+--store config on source code repo which maintained by team - GITHUB repo for eg.
+  you can backup resource configuration by quering kube api-server
+kubectl get all -all-namespaces -o yaml >all-deploy-services.yaml
+tools like "Velero" can take backup with help of Kube api.
+
+ETCD cluster:
+-backing etcd server
+for the etcd server we will have path directory for all the data that it can stored.
+and the directory called as " --data-dir= /var/lib/etcd" in ETCD service.
+etcd can have inbuilt snapshot for backup
+
+process of restoring cluster from backup
+1.stop the kube-api server  : service kube-apiserver stop
+2.run the command : ETCDCTL_API=3 etcdctl \ snapshot restore snapshot.db \ --data-dir /var/lib/etcd-from-backup
+the above command will create new configuration in the specified path that we mention that in data dircetory(--datra-dir)
+3.systemctl daemon-reload
+4.service etcd restart
+5.change the directory path in etcd configuration :--data-dir= /var/lab/etcd" to  --data-dir = /var/lib/etcd-from-backup
