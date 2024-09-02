@@ -50,3 +50,12 @@ the above command will create new configuration in the specified path that we me
 3.systemctl daemon-reload
 4.service etcd restart
 5.change the directory path in etcd configuration :--data-dir= /var/lab/etcd" to  --data-dir = /var/lib/etcd-from-backup
+
+---
+how to know the version of ETCD cluster:
+-Kubectl get pods -n kube-system.
+kubectl describe pod etcd-controlplane -n kube-system
+where is edcd cluster certificated located?
+/etc/kubernetes/pki/etcd/server.crt
+where is the etcd ca certificate located?
+etc/kubernetes/pki/etcd/ca.crt
