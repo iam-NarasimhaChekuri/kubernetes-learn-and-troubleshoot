@@ -13,5 +13,30 @@ Authorization:
 -The communication between each and every component is encrypted by TLS encryption.
 -By default the communication between the pods with in the cluster id allowed , but by using the Network Policies you can restric the access  between pods
 
+Authentication:
 
+-the authentication process has usaually happened in 4 types in kubernetes 4 types of use case we can have  in that 1. static password file (username+password+userid)
+2. static token file(username+token+userid) ,3. certificate , managed by external sources.
+
+you can not create user in kubernetes , users are managed by external resources like LDAP.
+the first two methods are not recommended because of you can experience less security over there.
+
+for example:
+    if you are using the static password file( a file which consist of password,username, userid,etc where the details will be in text format) then you have to add them in api-server.yaml file as a key value pair.
+value will be the csv file name and key will be the --basic-auth-file
+
+   --basic-auth-file=user.details.csv
+you have to add the above details in Kubernetes api-server.yaml file.
+or
+you can use curl command also to access the cluster
+curl -v -k https://master-node-ip:6443/api/v1/pod -u "user:password"
+
+      if you are using the static Token file( a file which consist of Token,username, userid,etc where the details will be in text format) then you have to add them in api-server.yaml file as a key value pair.
+      value will be the csv file name and key will be the --token-auth-file
+
+   --token-auth-file=user.details.csv
+you have to add the above details in Kubernetes api-server.yaml file.
+or
+you can use curl command also to access the cluster                      
+curl -v -k https://master-node-ip:6443/api/v1/pod -u "user: token value"
   
