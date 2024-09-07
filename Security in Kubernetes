@@ -1,0 +1,17 @@
+- Security Primitives:
+In kubernetes the only componant which can communicate with the every component in the cluster is Kube API server.
+IN Kubernetes the security is having two stages , which are 1. Authentication and 2. Authorization.
+Authentication:
+  - it defines who can access the cluster. 
+  - you can access the cluster based on the following attributes like 
+  - UserID, Password, Username, Token, certificates, external authentication preovider (LDAP), Service accounts for machines.
+Authorization:
+  - it defines that what you can do.
+  - you can authorize the cluster based on the following attributes like...
+  - RBAC(Role based access control), ABAC (Attibute Based access control), Node Authorization, webhook.
+
+-The communication between each and every component is encrypted by TLS encryption.
+-By default the communication between the pods with in the cluster id allowed , but by using the Network Policies you can restric the access  between pods
+
+
+  
