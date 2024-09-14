@@ -39,4 +39,102 @@ you have to add the above details in Kubernetes api-server.yaml file.
 or
 you can use curl command also to access the cluster                      
 curl -v -k https://master-node-ip:6443/api/v1/pod -u "user: token value"
-  
+
+---TLS introduction--------------
+Symmetric Encryption:
+---same key used to encrypt and decrypt the data
+SSH key gen- this command is used to generate the public key and private key.
+with asymmetric encryption, we can successfully use the symmetric encryption, means we can use to send the data in encrypted way .
+tls certificate ensure that the communication between server and client as encrypted
+
+id-rsa ->private key  id-rsa.pub ->public key
+cat ~/.ssh/authenticated-Keys
+you can secure the server by the with public key.
+
+openssl genrsa -out <key_name> -2048 ----> it will create the key pem file
+openssl rsa -in <key_name> -pubout > my-bank.key  myback.pem
+
+by default, all browsers has certificate validation mechanism.
+certificate authority will issues the certificate for transaction in secureway.
+certificate authority also having the two keys which are public key and private key, and the private key is used for sign the certificate, the public key will be built in the browser to verify thecertificate that is actually signed or not.
+some ca tools are global sign, digicert.
+
+for eg the keys with post fix *.crt or *.pem - public key
+postfix with *.key or *-key-pem - private key
+
+---------------------------- some /server client side certificate:------------------------------------------
+clientside certificate:
+
+1.admin-admin.crt , admin.key
+2.scheduler-schedular.crt, schedular.key
+3.controller manager - cm.crt , cm.key
+4.kubelet- kubelet.crt,kubelet.key 
+5.API server- apiserver.crt, apiserver.key and apiserver-etcd-client.crt, apiserver-etcd-clent.key
+
+server certificate for server:
+
+1.ETCD- etcdserver.crt, etcdserver.key
+2.APIserver - apiserver.crt, apiserver.key
+3.kubelet- kubelet.crt kubelet.key
+
+---------------How to generate a certificate--------------------------------------------
+
+to generate certificate we will use tools like easyrsa,openssl,cfssl
+
+openssl:
+
+----for ca:
+to generate key: openssl genrsa -out ca.key 2048  -> to generate ca named key
+to create certificate signing  request : openssl req-new -key ca.key -subj "/CN=KUBERNETES-CA" -out ca.csr
+to sign the request: openssl x509 -req -in ca.csr -signkey ca-key -out ca.crt
+
+-----for admin:
+to generate key:  openssl genrsa -out admin.key 2048 -------o/p: admin.key
+to create the certificate signing request : openssl req-new -key admin.key -subj "/CN=kube-admin" -out admin.csr    -> o/p: admin.key
+to sign the request : openssl x509 -req -in admin.csr -signkey admin-key -out admin.crt--------------o/p: admin.crt
+
+all certificates must have ca.crt certificate in kubernetes
+for high availability you can use etcdpeer.crt
+
+etcd server will be have the following etcdserver.key and etcdserver.crt , etcdpeer.key and etcdpeer.crt, ca.crt
+
+
+-----------------How to view certificate -----------------------------
+How to check the health checker of certificate in cluster?
+
+to view certificate in text format:
+openssl x509 -in /etc/kubernetes/pci/apiserver.crt -text -noout
+
+rootcertificate validity-10 years, apisertificate - 1 year
+
+--------------------------kubeconfig file--------------------------
+by default kubelet will be check for .kube directory in home folder
+home/.kube/config
+A kube config file is the file is having details about the cluster,users and context to interact with cluster
+
+the main three components of kubeconfig file:
+
+1. cluster 
+2.context
+3.user
+
+context will be telling that which user will be having to which cluster
+
+with this process you are not creating sny new user or giving access to the any user
+
+you can also specify the name under context
+
+How does kubectl knows which context to choose from?
+you can specify the default named an "current-context"
+
+kubectl config view --to view the current contect and config file
+kubectl config view --kube-config=mu-custom-config --to view your custom config file
+kubectl config use-context <context-name> --> you can change the current context
+
+
+
+
+
+
+
+
