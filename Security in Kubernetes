@@ -131,6 +131,28 @@ kubectl config view --to view the current contect and config file
 kubectl config view --kube-config=mu-custom-config --to view your custom config file
 kubectl config use-context <context-name> --> you can change the current context
 
+----------------------API GROUPS---------
+every operation in k8's is hanaled and managed by Kube api server component.
+
+we have api groups , which are devided based on their operation
+for eg:
+/management , /healthz , /version , /api , /apis, /logs ,...
+to checck version of cluster we will use /version api
+curl http://kube-master:6443/verion
+to get pods we willl check 
+curl http://kube-master:6443/api/v1/pods
+
+we have two api groups called as core and named groups
+core group - /api - have core functionality
+eg: pods,namespace,replica controller,events,endpoints,bindingd,pv,pvc,cm,secret,services
+named group- /apis -these are more organized 
+eg: /apps,/extentions,/networking.k8s.io,/storage.k8s.io,/authentication.k8s.io,/certificate.k8s.io
+
+to check core apigroups in cluster
+curl http://localhost:6443 -k
+to check named apigroups in cluster
+curl http://localhost:6443/apis -k | grep "name : "
+
 
 
 
